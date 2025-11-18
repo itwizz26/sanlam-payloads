@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -105,6 +106,18 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Celery Configuration
+CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND', default='redis://localhost:6379/0')
+CELERY_ACCEPT_CONTENT=['json', 'application/x-python-serialize']
+CELERY_TASK_SERIALIZER='json'
+CELERY_RESULT_SERIALIZER='json'
+CELERY_TIMEZONE='UTC'
+
+# Load Eager configurations for pytest
+if 'pytest' in sys.modules:
+    CELERY_TASK_ALWAYS_EAGER = True
+    CELERY_TASK_EAGER_PROPAGATES_EXCEPTIONS = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
