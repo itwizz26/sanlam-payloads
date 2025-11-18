@@ -4,9 +4,9 @@ from rest_framework.decorators import action
 from django.db.models import Sum, Count
 from dateutil import parser
 from django.db import models
-
 from .models import Payout
 from .serializers import PayoutSerializer
+from .tasks import classify_payout
 
 class PayoutViewSet(viewsets.ModelViewSet):
     queryset = Payout.objects.all()
@@ -28,6 +28,8 @@ class PayoutViewSet(viewsets.ModelViewSet):
         if created:
             http_status = status.HTTP_201_CREATED
             message = "Payout intake successful."
+            classify_payout.delay(payout.id)
+
         else:
             http_status = status.HTTP_200_OK
             message = "Payout already exists."

@@ -48,3 +48,24 @@
 * **Filtering:**
 
   The summary is exposed via a custom DRF `@action` that requires `start_date` and `end_date` query parameters for accurate time-series reporting.
+
+#### 4. Background Classification (Task 4)
+
+* **Mechanism:** 
+
+  **Celery** is used as the asynchronous task runner, with **Redis** configured as both the message broker and result backend.
+
+
+* **Responsive Intake:**
+  
+  In the `PayoutViewSet.create()` method, immediately after a new `Payout` record is saved, the API calls `classify_payout.delay(payout.id)`.
+  * This call **is non-blocking**, ensuring the client receives an **`HTTP 201 CREATED`** response in milliseconds.
+
+
+* **Classification logic:** 
+
+  The actual status change (e.g., `RECEIVED` to `PROCESSED` or `FLAGGED`) happens inside the separate `classify_payout` task worker process, preventing high-latency operations from delaying the partner's API response.
+
+* **Concurrency:**
+  
+  On Windows machines, the Celery worker is run in the non-default **solo pool** (`-P solo`) to avoid common multiprocessing and permissions issues - optimised for development environment stability.
