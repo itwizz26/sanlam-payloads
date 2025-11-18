@@ -1,0 +1,31 @@
+# Python bytecode
+*.pyc
+__pycache__/
+
+# Virtual Environment
+.env
+venv/
+env/
+
+# Django-specific files
+*.log
+*.pot
+db.sqlite3
+local_settings.py  # Or any other file containing local/sensitive settings
+
+# Editor/IDE specific files
+.idea/  # PyCharm
+.vscode/ # VS Code
+.DS_Store # macOS specific
+Thumbs.db # Windows specific
+
+# Test and coverage files
+.coverage
+.tox/
+htmlcov/
+
+# Static files (if collected into a separate directory)
+static_cdn/ # Example if you have a separate static files directory
+
+# Media files (user-uploaded content)
+media/
